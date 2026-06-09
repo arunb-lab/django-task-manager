@@ -1,0 +1,12 @@
+# =============================================================================
+# requirements.txt — Python Dependencies
+# =============================================================================
+# This file lists all the Python packages your project needs.
+# When someone clones your project, they run:
+#   pip install -r requirements.txt
+# ...to install all these packages automatically.
+#
+# We only need Django itself for this beginner project.
+# No extra packages = less confusion for learners!
+
+Django==4.2.9
