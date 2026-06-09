@@ -1,0 +1,60 @@
+{# =========================================================================== #}
+{# tasks/templates/tasks/task_confirm_delete.html — Delete Confirmation      #}
+{# =========================================================================== #}
+{#                                                                             #}
+{# Django's DeleteView uses a two-step pattern for safety:                    #}
+{#   Step 1 (GET): Show this confirmation page — "Are you sure?"              #}
+{#   Step 2 (POST): Actually delete the object when user confirms             #}
+{#                                                                             #}
+{# This prevents accidental deletions (e.g., if someone shares a delete URL). #}
+{#                                                                             #}
+{# Available context variables (from TaskDeleteView):                         #}
+{#   object — the Task about to be deleted (also available as 'task' via     #}
+{#            context_object_name, but DeleteView uses 'object' by default)  #}
+{# =========================================================================== #}
+
+{% extends "tasks/base.html" %}
+
+{% block title %}Delete Task — Task Manager{% endblock %}
+
+{% block content %}
+
+  <div class="page-header">
+    <h1>🗑️ Delete Task</h1>
+    <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">← Back to List</a>
+  </div>
+
+  <div class="card" style="border-left: 4px solid #e74c3c; max-width: 600px;">
+
+    {# Warning message #}
+    <div style="margin-bottom:1.5rem;">
+      <p style="font-size:1.1rem; color:#c0392b; font-weight:600; margin-bottom:0.5rem;">
+        ⚠️ Are you sure you want to delete this task?
+      </p>
+      <p style="color:#555;">This action <strong>cannot be undone</strong>.</p>
+    </div>
+
+    {# Show the task being deleted #}
+    <div style="background:#fff5f5; border:1px solid #fadbd8; border-radius:6px; padding:1rem; margin-bottom:1.5rem;">
+      <p><strong>Task:</strong> {{ object.title }}</p>
+      {% if object.description %}
+        <p style="color:#888; font-size:0.9rem; margin-top:0.3rem;">{{ object.description|truncatewords:20 }}</p>
+      {% endif %}
+    </div>
+
+    {# ---- Confirmation Form ---- #}
+    {# The delete is performed by a POST request to the same URL.             #}
+    {# Django's DeleteView checks: if POST, delete; if GET, show this page.  #}
+    {# We still need {% csrf_token %} for all POST forms!                     #}
+    <form method="post">
+      {% csrf_token %}
+      <div style="display:flex; gap:0.75rem; align-items:center;">
+        <button type="submit" class="btn btn-danger">Yes, Delete It</button>
+        {# Cancel goes back to the task detail page #}
+        <a href="{% url 'tasks:task_detail' object.pk %}" class="btn btn-secondary">No, Keep It</a>
+      </div>
+    </form>
+
+  </div>
+
+{% endblock %}
