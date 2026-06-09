@@ -1,0 +1,116 @@
+{# =========================================================================== #}
+{# tasks/templates/tasks/task_form.html — Create & Edit Form Page            #}
+{# =========================================================================== #}
+{#                                                                             #}
+{# This ONE template is used for BOTH creating AND editing tasks!             #}
+{# The view passes context variables to customize what it shows:              #}
+{#   page_title — "Create New Task" or "Edit Task: <title>"                  #}
+{#   button_label — "Create Task" or "Save Changes"                          #}
+{#   form — the TaskForm instance (empty for create, pre-filled for edit)    #}
+{#                                                                             #}
+{# HOW DJANGO FORMS WORK IN TEMPLATES:                                        #}
+{#   {{ form.as_p }} → renders all form fields wrapped in <p> tags            #}
+{#   {{ form.field_name }} → renders a single field                           #}
+{#   {{ form.field_name.label_tag }} → renders just the <label>               #}
+{#   {{ form.field_name.errors }} → renders validation errors for that field  #}
+{#                                                                             #}
+{# We render each field MANUALLY for more control over styling.               #}
+{# =========================================================================== #}
+
+{% extends "tasks/base.html" %}
+
+{% block title %}{{ page_title }} — Task Manager{% endblock %}
+
+{% block content %}
+
+  <div class="page-header">
+    {# page_title is passed from the view's context #}
+    <h1>{{ page_title }}</h1>
+    <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">← Cancel</a>
+  </div>
+
+  <div class="card">
+
+    {# ---- The HTML Form ---- #}
+    {#                                                                           #}
+    {# method="post" — form data is sent via POST (not visible in URL)          #}
+    {# Without action="", form submits to the current URL (which the view       #}
+    {# handles for both GET and POST).                                           #}
+    {#                                                                           #}
+    {# {% csrf_token %} — REQUIRED for all POST forms in Django!                #}
+    {# CSRF = Cross-Site Request Forgery. Django uses a hidden token in every   #}
+    {# form to verify the submission came from your site, not from an attacker. #}
+    {# If you forget {% csrf_token %}, Django will reject the form with a 403.  #}
+    <form method="post">
+      {% csrf_token %}
+
+      {# ---- Title Field ---- #}
+      <div class="form-group">
+        {# form.title.label_tag renders: <label for="id_title">Title:</label> #}
+        {{ form.title.label_tag }}
+
+        {# form.title renders the <input> widget for the title field          #}
+        {# The CSS classes come from the widgets in forms.py                  #}
+        {{ form.title }}
+
+        {# form.title.errors shows validation errors (e.g., "This field is required.") #}
+        {# It's only shown if the form was submitted with invalid data         #}
+        {% if form.title.errors %}
+          <ul class="error-list">
+            {% for error in form.title.errors %}
+              <li>⚠️ {{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {# ---- Description Field ---- #}
+      <div class="form-group">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {% if form.description.errors %}
+          <ul class="error-list">
+            {% for error in form.description.errors %}
+              <li>⚠️ {{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {# ---- Is Complete Checkbox ---- #}
+      <div class="form-group">
+        <div class="checkbox-row">
+          {# For checkboxes, we show the input FIRST, then the label #}
+          {{ form.is_complete }}
+          <label for="{{ form.is_complete.id_for_label }}">Mark as complete</label>
+        </div>
+        {% if form.is_complete.errors %}
+          <ul class="error-list">
+            {% for error in form.is_complete.errors %}
+              <li>⚠️ {{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {# ---- Non-field Errors ---- #}
+      {# These are errors not tied to a specific field (e.g., from clean() method) #}
+      {% if form.non_field_errors %}
+        <ul class="error-list">
+          {% for error in form.non_field_errors %}
+            <li>⚠️ {{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {# ---- Submit Button ---- #}
+      {# button_label is passed from the view — "Create Task" or "Save Changes" #}
+      <div style="display:flex; gap:0.75rem; align-items:center; margin-top:1.5rem;">
+        <button type="submit" class="btn btn-success">{{ button_label }}</button>
+        <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+
+{% endblock %}
