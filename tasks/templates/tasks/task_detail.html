@@ -1,0 +1,77 @@
+{# =========================================================================== #}
+{# tasks/templates/tasks/task_detail.html — Task Detail Page                 #}
+{# =========================================================================== #}
+{#                                                                             #}
+{# Available context variables (from TaskDetailView):                         #}
+{#   task — the specific Task object (we named it context_object_name='task') #}
+{#                                                                             #}
+{# Notice: We use task.title, task.description, etc. to access model fields. #}
+{# This works because Django automatically provides the model instance.       #}
+{# =========================================================================== #}
+
+{% extends "tasks/base.html" %}
+
+{# task.title is the title attribute from our Task model #}
+{% block title %}{{ task.title }} — Task Manager{% endblock %}
+
+{% block content %}
+
+  <div class="page-header">
+    <h1>📌 Task Details</h1>
+    <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">← Back to List</a>
+  </div>
+
+  <div class="card">
+
+    {# ---- Task Title & Status ---- #}
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+      <h2 style="font-size:1.5rem; color:#2c3e50;">{{ task.title }}</h2>
+
+      {# Conditional badge based on the is_complete boolean field #}
+      {% if task.is_complete %}
+        <span class="badge badge-success" style="font-size:0.9rem;">✓ Completed</span>
+      {% else %}
+        <span class="badge badge-secondary" style="font-size:0.9rem;">⏳ Pending</span>
+      {% endif %}
+    </div>
+
+    {# ---- Description ---- #}
+    {% if task.description %}
+      <div style="margin-bottom:1.5rem;">
+        <strong style="color:#555;">Description:</strong>
+        <p style="margin-top:0.4rem; color:#444; line-height:1.7;">{{ task.description }}</p>
+      </div>
+    {% else %}
+      <p style="color:#aaa; margin-bottom:1.5rem; font-style:italic;">No description provided.</p>
+    {% endif %}
+
+    {# ---- Metadata ---- #}
+    <div style="border-top:1px solid #eee; padding-top:1rem; margin-top:1rem;">
+      <table style="font-size:0.9rem; color:#666; border-collapse:collapse;">
+        <tr>
+          <td style="padding:0.3rem 1rem 0.3rem 0; font-weight:600;">Task ID:</td>
+          {# task.pk is the primary key (auto-generated integer ID) #}
+          <td>{{ task.pk }}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.3rem 1rem 0.3rem 0; font-weight:600;">Created:</td>
+          {# |date and |time are Django template filters for formatting datetimes #}
+          <td>{{ task.created_at|date:"F j, Y" }} at {{ task.created_at|time:"g:i A" }}</td>
+        </tr>
+        <tr>
+          <td style="padding:0.3rem 1rem 0.3rem 0; font-weight:600;">Last Updated:</td>
+          <td>{{ task.updated_at|date:"F j, Y" }} at {{ task.updated_at|time:"g:i A" }}</td>
+        </tr>
+      </table>
+    </div>
+
+    {# ---- Action Buttons ---- #}
+    <div class="actions" style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid #eee;">
+      <a href="{% url 'tasks:task_update' task.pk %}" class="btn btn-warning">✏️ Edit Task</a>
+      <a href="{% url 'tasks:task_delete' task.pk %}" class="btn btn-danger">🗑️ Delete Task</a>
+      <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">← All Tasks</a>
+    </div>
+
+  </div>
+
+{% endblock %}
