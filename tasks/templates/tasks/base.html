@@ -1,0 +1,249 @@
+{# =========================================================================== #}
+{# tasks/templates/tasks/base.html — Base Template (Shared Layout)           #}
+{# =========================================================================== #}
+{#                                                                             #}
+{# TEMPLATE INHERITANCE is one of Django's most powerful features.            #}
+{#                                                                             #}
+{# This file is the BASE TEMPLATE. It defines the shared HTML structure       #}
+{# (nav bar, page structure, footer) used by ALL pages in the app.            #}
+{#                                                                             #}
+{# CHILD TEMPLATES extend this base and fill in specific "blocks":            #}
+{#   {% extends "tasks/base.html" %}                                          #}
+{#   {% block content %}                                                      #}
+{#     <p>This replaces the content block!</p>                                #}
+{#   {% endblock %}                                                            #}
+{#                                                                             #}
+{# This prevents repeating the <head>, <nav>, <footer> on every page.        #}
+{# Change the nav once here and it updates on every page automatically.       #}
+{#                                                                             #}
+{# DJANGO TEMPLATE SYNTAX:                                                    #}
+{#   {{ variable }}     → Outputs a variable's value                          #}
+{#   {% tag %}          → Template tags (logic, blocks, etc.)                 #}
+{#   {# comment #}      → Template comments (not sent to browser)            #}
+{# =========================================================================== #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {# ---- block title ----                                               #}
+  {# Child templates override this block to set page-specific titles.   #}
+  {# The default value is "Task Manager" if no child overrides it.      #}
+  <title>{% block title %}Task Manager{% endblock %}</title>
+
+  {# Minimal CSS for a clean, readable UI — no external dependencies #}
+  <style>
+    /* --- Reset & Base --- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Navigation Bar --- */
+    nav {
+      background: #2c3e50;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    nav .brand { color: #fff; font-size: 1.3rem; font-weight: 700; text-decoration: none; }
+    nav .nav-links a {
+      color: #bdc3c7;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    nav .nav-links a:hover { color: #fff; }
+
+    /* --- Main Content Area --- */
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* --- Page Header --- */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 1.8rem; color: #2c3e50; }
+
+    /* --- Cards --- */
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+
+    /* --- Task Items --- */
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 0.75rem;
+      border-left: 4px solid #3498db;
+      transition: transform 0.1s;
+    }
+    .task-item:hover { transform: translateX(2px); }
+    .task-item.complete { border-left-color: #2ecc71; opacity: 0.7; }
+    .task-item.complete .task-title { text-decoration: line-through; color: #888; }
+    .task-title { font-size: 1.05rem; font-weight: 600; color: #2c3e50; flex: 1; }
+    .task-title a { color: inherit; text-decoration: none; }
+    .task-title a:hover { color: #3498db; }
+    .task-meta { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+
+    /* --- Buttons --- */
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1.1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: #3498db; color: #fff; }
+    .btn-success { background: #2ecc71; color: #fff; }
+    .btn-warning { background: #f39c12; color: #fff; }
+    .btn-danger  { background: #e74c3c; color: #fff; }
+    .btn-secondary { background: #95a5a6; color: #fff; }
+
+    /* --- Forms --- */
+    .form-group { margin-bottom: 1.2rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.4rem; color: #555; font-size: 0.9rem; }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: #3498db; box-shadow: 0 0 0 3px rgba(52,152,219,0.15); }
+    .form-textarea { resize: vertical; }
+    .checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
+    .form-checkbox { width: 1.1rem; height: 1.1rem; cursor: pointer; }
+    .error-list { color: #e74c3c; font-size: 0.85rem; margin-top: 0.3rem; list-style: none; }
+
+    /* --- Alerts / Messages --- */
+    .messages { list-style: none; margin-bottom: 1rem; }
+    .message {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .message.success { background: #d5f5e3; color: #1e8449; border: 1px solid #abebc6; }
+    .message.error   { background: #fadbd8; color: #922b21; border: 1px solid #f5b7b1; }
+
+    /* --- Badge --- */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-success { background: #d5f5e3; color: #1e8449; }
+    .badge-secondary { background: #eee; color: #666; }
+
+    /* --- Empty State --- */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #888;
+    }
+    .empty-state p { margin-bottom: 1rem; font-size: 1.1rem; }
+
+    /* --- Footer --- */
+    footer {
+      background: #2c3e50;
+      color: #7f8c8d;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.85rem;
+      margin-top: auto;
+    }
+
+    /* --- Actions Row --- */
+    .actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  </style>
+</head>
+
+<body>
+
+  {# ---- Navigation Bar ---- #}
+  <nav>
+    {# {% url 'tasks:task_list' %} generates the URL for the task list page #}
+    {# Using URL names (not hardcoded paths) means if you change the URL    #}
+    {# pattern in urls.py, all your templates update automatically!         #}
+    <a href="{% url 'tasks:task_list' %}" class="brand">✅ Task Manager</a>
+    <div class="nav-links">
+      <a href="{% url 'tasks:task_list' %}">All Tasks</a>
+      <a href="{% url 'tasks:task_create' %}">+ New Task</a>
+    </div>
+  </nav>
+
+  {# ---- Flash Messages ---- #}
+  {# Django's messages framework lets views add one-time notifications.    #}
+  {# After they're displayed once, they disappear on the next page load.   #}
+  {# We added messages in views.py using: messages.success(request, '...') #}
+  {% if messages %}
+    <div style="max-width:900px; margin: 1rem auto; padding: 0 1rem;">
+      <ul class="messages">
+        {% for message in messages %}
+          {# message.tags is 'success', 'error', 'warning', or 'info' #}
+          <li class="message {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  {# ---- Main Content ---- #}
+  <main>
+    {# ---- block content ----                                              #}
+    {# This is where child templates insert their unique content.           #}
+    {# Without this block, all child templates would show nothing here!     #}
+    {% block content %}
+      {# Fallback content if no child overrides this block #}
+      <p>No content defined for this page.</p>
+    {% endblock %}
+  </main>
+
+  {# ---- Footer ---- #}
+  <footer>
+    <p>Django Task Manager — A Beginner Learning Project</p>
+  </footer>
+
+</body>
+</html>
