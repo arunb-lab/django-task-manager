@@ -1,6 +1,14 @@
 # Django Task Manager — Beginner's Learning Project
 
-A complete, beginner-friendly Django project that teaches core Django concepts through a real working **Task Manager** application. Every file is heavily commented to explain *why*, not just *what*.
+[![Django CI](https://github.com/arunb-lab/django-task-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/arunb-lab/django-task-manager/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
+[![Django 4.2](https://img.shields.io/badge/django-4.2-green.svg)](https://www.djangoproject.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Contributors](https://img.shields.io/github/contributors/arunb-lab/django-task-manager)](https://github.com/arunb-lab/django-task-manager/graphs/contributors)
+
+> 🌍 **This project is open to contributors worldwide!**  
+> A complete, beginner-friendly Django project that teaches core Django concepts through a real working **Task Manager** application. Every file is heavily commented to explain *why*, not just *what*.
 
 ---
 
@@ -17,6 +25,7 @@ By studying and running this project, you will understand:
 - How to build **forms** with `ModelForm`
 - How to perform full **CRUD** (Create, Read, Update, Delete)
 - How to use the **Django Admin** panel
+- How **CI/CD pipelines** work with GitHub Actions
 
 ---
 
@@ -24,6 +33,12 @@ By studying and running this project, you will understand:
 
 ```
 django-task-manager/          ← Root folder (your working directory)
+│
+├── .github/                   ← GitHub-specific files
+│   ├── workflows/
+│   │   └── ci.yml            ← GitHub Actions CI/CD pipeline
+│   ├── ISSUE_TEMPLATE/       ← Bug report & feature request forms
+│   └── pull_request_template.md
 │
 ├── taskmanager/              ← Django PROJECT folder (created with startproject)
 │   ├── __init__.py           ← Makes this a Python package
@@ -41,7 +56,6 @@ django-task-manager/          ← Root folder (your working directory)
 │   │       ├── task_detail.html
 │   │       ├── task_form.html
 │   │       └── task_confirm_delete.html
-│   ├── __init__.py
 │   ├── admin.py              ← Register models for the admin panel
 │   ├── apps.py               ← App configuration
 │   ├── forms.py              ← ModelForm for creating/editing tasks
@@ -51,6 +65,7 @@ django-task-manager/          ← Root folder (your working directory)
 │
 ├── manage.py                 ← Django's command-line utility
 ├── requirements.txt          ← Python dependencies
+├── CONTRIBUTING.md           ← How to contribute to this project
 ├── .gitignore                ← Files Git should not track
 └── README.md                 ← This file
 ```
@@ -119,8 +134,6 @@ cd django-task-manager
 
 ### 3. Create and Activate a Virtual Environment
 
-A virtual environment keeps this project's dependencies isolated from other projects.
-
 ```bash
 # Create the virtual environment
 python -m venv venv
@@ -129,9 +142,7 @@ python -m venv venv
 source venv/bin/activate
 
 # Activate it (Windows)
-venv\Scripts\activate
-
-# Your prompt should now show (venv)
+venv\\Scripts\\activate
 ```
 
 ### 4. Install Dependencies
@@ -142,22 +153,14 @@ pip install -r requirements.txt
 
 ### 5. Run Migrations
 
-Migrations create the database tables based on the models defined in `models.py`.
-
 ```bash
 python manage.py migrate
-```
-
-You should see output like:
-```
-Applying tasks.0001_initial... OK
 ```
 
 ### 6. Create a Superuser (for Django Admin)
 
 ```bash
 python manage.py createsuperuser
-# Enter a username, email, and password when prompted
 ```
 
 ### 7. Run the Development Server
@@ -184,6 +187,39 @@ Open your browser and visit:
 
 ---
 
+## CI/CD Pipeline
+
+This project uses **GitHub Actions** for Continuous Integration. Every push and Pull Request automatically:
+
+1. ✅ Runs the test suite on **Python 3.9, 3.10, and 3.11**
+2. 💎 Lints the code with **flake8**
+3. ⚙️ Runs **Django system checks** (`manage.py check`)
+4. 🔒 Audits dependencies for **security vulnerabilities**
+5. 📈 Generates a **coverage report**
+
+Check the **Actions tab** to see pipeline runs: [GitHub Actions](https://github.com/arunb-lab/django-task-manager/actions)
+
+---
+
+## Contributing — Help This Go Global! 🌍
+
+**We want this to be the #1 Django learning resource for beginners worldwide.**
+
+Whether you're a first-time open source contributor or an experienced developer, **your contribution matters**. Here's how you can help:
+
+- 🐛 **Found a bug?** [Open a bug report](https://github.com/arunb-lab/django-task-manager/issues/new?template=bug_report.md)
+- ✨ **Have an idea?** [Request a feature](https://github.com/arunb-lab/django-task-manager/issues/new?template=feature_request.md)
+- 📚 **Improve docs** — fix typos, add examples, translate to another language
+- ✅ **Write tests** — help us reach 100% coverage
+- 🌐 **Translate** — make this accessible in your language
+- 🏫 **Add features** — see the ideas list in [CONTRIBUTING.md](CONTRIBUTING.md)
+
+**Read [CONTRIBUTING.md](CONTRIBUTING.md) for the full step-by-step guide.**
+
+> 👋 **New to open source?** This project has "good first issue" labels. Every PR is welcome, no matter how small. We were all beginners once.
+
+---
+
 ## Learning Exercises
 
 Once the app is running, try these to deepen your understanding:
@@ -193,9 +229,22 @@ Once the app is running, try these to deepen your understanding:
 3. **Add a search bar** to the task list that filters by title.
 4. **Style the app** by adding Bootstrap CSS to `base.html`.
 5. **Add user authentication** so each user can only see their own tasks.
+6. **Write tests** using Django's `TestCase` — run with `python manage.py test`
+
+---
+
+## Star & Share ⭐
+
+If this project helped you learn Django, please:
+
+- ⭐ **Star this repo** to help others find it
+- 🔁 **Share it** with friends learning Python/Django
+- 🌍 **Tell your local meetup** — help us reach learners in every country
+
+**Together we can make quality Django education free and accessible to everyone.**
 
 ---
 
 ## License
 
-MIT — free to use for learning.
+MIT — free to use, modify, and share for learning.
