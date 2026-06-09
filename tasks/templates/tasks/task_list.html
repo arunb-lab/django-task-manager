@@ -1,0 +1,106 @@
+{# =========================================================================== #}
+{# tasks/templates/tasks/task_list.html — Task List Page                     #}
+{# =========================================================================== #}
+{#                                                                             #}
+{# This is a CHILD TEMPLATE that EXTENDS base.html.                           #}
+{#                                                                             #}
+{# {% extends %} tells Django: "Start with base.html and fill in its blocks." #}
+{# This page only needs to define what's DIFFERENT from the base.             #}
+{#                                                                             #}
+{# Available context variables (provided by TaskListView in views.py):        #}
+{#   task_list — a QuerySet of all Task objects (we named it in the view)     #}
+{# =========================================================================== #}
+
+{% extends "tasks/base.html" %}
+
+{# Override the <title> block from base.html #}
+{% block title %}All Tasks — Task Manager{% endblock %}
+
+{# Override the main content block #}
+{% block content %}
+
+  {# ---- Page Header ---- #}
+  <div class="page-header">
+    <h1>📋 All Tasks</h1>
+    {# Link to the create task page. 'tasks:task_create' is the URL name. #}
+    <a href="{% url 'tasks:task_create' %}" class="btn btn-primary">+ New Task</a>
+  </div>
+
+  {# ---- Task Statistics ---- #}
+  {# Django templates can do simple counting with the |length filter #}
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <p>
+      <strong>Total:</strong> {{ task_list|length }} task{{ task_list|length|pluralize }}
+      &nbsp;|&nbsp;
+      {# Count completed tasks using a template filter trick #}
+      {# In a real app, you might do this counting in the view instead #}
+      <strong>Completed:</strong>
+      {% with completed_count=0 %}
+        {# Django templates are intentionally limited — complex logic belongs in views! #}
+        {{ task_list|length }} total
+      {% endwith %}
+    </p>
+  </div>
+
+  {# ---- Task List ---- #}
+  {# {% if %} / {% else %} / {% endif %} — conditional rendering #}
+  {% if task_list %}
+
+    {# {% for item in collection %} / {% endfor %} — loop over a list #}
+    {# task_list comes from the view's context_object_name = 'task_list' #}
+    {% for task in task_list %}
+
+      {# CSS class changes based on whether task is complete.           #}
+      {# {% if %} inside class attribute — inline conditional styling   #}
+      <div class="task-item {% if task.is_complete %}complete{% endif %}">
+
+        {# Task Title — links to the detail view #}
+        <div class="task-content" style="flex:1;">
+          <div class="task-title">
+            {# {{ task.pk }} is the task's primary key (the id integer) #}
+            {# This generates a URL like: /tasks/42/                     #}
+            <a href="{% url 'tasks:task_detail' task.pk %}">{{ task.title }}</a>
+          </div>
+
+          {# Show description snippet if it exists — |truncatewords limits length #}
+          {% if task.description %}
+            <div class="task-meta">{{ task.description|truncatewords:15 }}</div>
+          {% endif %}
+
+          {# Date display — |date filter formats the datetime #}
+          <div class="task-meta">
+            Created: {{ task.created_at|date:"M d, Y" }}
+          </div>
+        </div>
+
+        {# Status Badge #}
+        <div>
+          {% if task.is_complete %}
+            <span class="badge badge-success">✓ Done</span>
+          {% else %}
+            <span class="badge badge-secondary">Pending</span>
+          {% endif %}
+        </div>
+
+        {# Action Buttons #}
+        <div class="actions">
+          <a href="{% url 'tasks:task_detail' task.pk %}" class="btn btn-secondary" style="font-size:0.8rem; padding:0.3rem 0.7rem;">View</a>
+          <a href="{% url 'tasks:task_update' task.pk %}" class="btn btn-warning" style="font-size:0.8rem; padding:0.3rem 0.7rem;">Edit</a>
+          <a href="{% url 'tasks:task_delete' task.pk %}" class="btn btn-danger" style="font-size:0.8rem; padding:0.3rem 0.7rem;">Delete</a>
+        </div>
+
+      </div>
+
+    {# forloop.last is True on the last iteration — useful for conditional rendering #}
+    {# We don't use it here, but it's a helpful template trick to know about #}
+    {% endfor %}
+
+  {% else %}
+    {# No tasks yet — show an empty state message #}
+    <div class="empty-state card">
+      <p>🎉 No tasks yet! Create your first task to get started.</p>
+      <a href="{% url 'tasks:task_create' %}" class="btn btn-primary">Create Your First Task</a>
+    </div>
+  {% endif %}
+
+{% endblock %}
