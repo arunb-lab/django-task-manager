@@ -1,0 +1,72 @@
+# =============================================================================
+# .gitignore for Django Projects
+# =============================================================================
+# This file tells Git which files/folders to ignore (not track).
+# You don't want to commit sensitive settings, compiled files, or local-only
+# stuff that other developers don't need.
+
+# --- Python compiled files ---
+# Python creates these .pyc files when it compiles your .py files.
+# They are auto-generated and don't need to be in version control.
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- Virtual environment ---
+# Your virtual environment folder (usually named venv or env).
+# Each developer creates their own, so we don't commit it.
+venv/
+env/
+.venv/
+.env/
+
+# --- Django specific ---
+# The SQLite database file (db.sqlite3) is your local database.
+# In production you'd use PostgreSQL/MySQL, and in development each
+# developer has their own local copy.
+db.sqlite3
+db.sqlite3-journal
+
+# --- Django static files (collected) ---
+# The /static/ folder at the root is where "collectstatic" puts files.
+# Only needed for production deployments.
+/static/
+
+# --- Media files ---
+# User-uploaded files. These should be stored separately, not in Git.
+/media/
+
+# --- Environment variables file ---
+# This file often contains SECRET_KEY and database passwords.
+# NEVER commit this to Git!
+.env
+*.env
+
+# --- IDE and editor files ---
+# These are personal settings for code editors. Other developers use
+# different editors, so we don't share these.
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- Operating System files ---
+# These are created automatically by macOS, Windows, etc.
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Test and coverage reports ---
+.coverage
+htmlcov/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# --- Log files ---
+*.log
